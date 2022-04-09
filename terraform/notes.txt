@@ -1,0 +1,59 @@
+# kubectl create secret generic regcred --from-file=.dockerconfigjson=/home/mikh/.docker/config.json --type=kubernetes.io/dockerconfigjson
+
+# kubectl create secret tls rwxrwxrwx-tls --key=certs/tls.key --cert=certs/tls.crt
+
+# kubectl get configmap -n kube-system coredns -o yaml
+# kubectl apply -f coredns.yaml
+
+
+##############
+
+
+# NOTE: https://cloud.yandex.ru/docs/cli/operations/install-cli
+
+# curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+# yc config set token ${YC_TOKEN}
+
+
+# NOTE: https://cloud.yandex.ru/docs/managed-kubernetes/operations/kubernetes-cluster/kubernetes-cluster-get-credetials
+
+# yc managed-kubernetes cluster get-credentials k8s-cluster --external
+
+
+# NOTE: https://cloud.yandex.ru/docs/managed-kubernetes/operations/node-connect-ssh#creating-ssh-keys
+
+# yc managed-kubernetes node-group add-metadata \
+#   --name k8s-cluster \
+#   --metadata-from-file ssh-keys=certs/id_rsa.pub
+
+
+# NOTE: https://cloud.yandex.ru/docs/managed-kubernetes/operations/create-static-conf
+
+# yc managed-kubernetes cluster get --id $CLUSTER_ID --format json | \
+#     jq -r .master.master_auth.cluster_ca_certificate | \
+#     awk '{gsub(/\\n/,"\n")}1' > certs/ca.pem
+
+# kubectl create -f sa.yaml
+
+# SA_TOKEN=$(kubectl -n kube-system get secret $(kubectl -n kube-system get secret | \
+#     grep admin-user | \
+#     awk '{print $1}') -o json | \
+#     jq -r .data.token | \
+#     base64 --d)
+
+# kubectl config set-cluster k8s-cluster \
+#                --certificate-authority=ca.pem \
+#                --server=$MASTER_ENDPOINT \
+#                --kubeconfig=yc-k8s-cluster.kubeconfig
+
+# kubectl config set-credentials admin-user \
+#                 --token=$SA_TOKEN \
+#                 --kubeconfig=yc-k8s-cluster.kubeconfig
+
+# kubectl config set-context default \
+#                --cluster=k8s-cluster \
+#                --user=admin-user \
+#                --kubeconfig=yc-k8s-cluster.kubeconfig
+
+# kubectl config use-context default \
+#                --kubeconfig=yc-k8s-cluster.kubeconfig
