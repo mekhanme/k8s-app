@@ -3,3 +3,4 @@
 logs.txt
 node_modules/
 certs/
+charts/*/charts/*

@@ -25,7 +25,7 @@ inputs   = {
   release_channel           = "RAPID"
   network_policy_provider   = "CALICO"
   container_runtime         = "containerd"
-  node_group_size           = 1
+  node_group_size           = 3
   network   = {
     name        = dependency.vpc.outputs.network_name
     region      = "ru-central1"
@@ -48,10 +48,10 @@ inputs   = {
   resources   = {
     memory          = 2
     cores           = 2
-    core_fraction   = 5
+    core_fraction   = 100
   }
   boot_disk   = {
-    type   = "network-ssd"
+    type   = "network-hdd"
     size   = 30
   }
   key_id                    = dependency.kms-key.outputs.key_id
