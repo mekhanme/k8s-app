@@ -1,0 +1,66 @@
+replicaCount: 1
+
+image:
+  repository: cr.yandex/crpgf4au6prfo3nhoduj/app/node-app
+  pullPolicy: Always
+  tag: latest
+
+imagePullSecrets:
+  - name: regcred
+
+nameOverride: node
+fullnameOverride: node
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: node
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: NodePort
+  port: 3000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: node.rwxrwxrwx.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - node.rwxrwxrwx.dev
+      secretName: rwxrwxrwx-tls
+
+resources: {}
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env:
+  DB_HOST: ""
+  DB_USER: ""
+  DB_PORT: ""
+  DB_PASSWORD: ""
+  DB_DATABASE: ""
+
+
+# helm upgrade --install node-app ./ --values values.yaml --set env.DB_HOST="mysql-primary.default.svc.cluster.local" --set env.DB_USER="root" --set env.DB_PORT="3306" --set env.DB_PASSWORD="inworkwetrust" --set env.DB_DATABASE="crypto_bitcoin"

@@ -1,0 +1,5 @@
+name: node-app
+apiVersion: v2
+type: application
+version: 0.1.1
+appVersion: 0.1.1
